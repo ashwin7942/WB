@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(27, 9, 9, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        td {
+            vertical-align: middle;
+        }
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+        .actions button {
+            padding: 5px 10px;
+            margin: 0 2px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+        .actions .edit-btn {
+            background-color: #007bff;
+        }
+        .actions .delete-btn {
+            background-color: #dc3545;
+        }
+        .actions .details-btn {
+            background-color: #28a745;
+        }
+        .actions button:hover {
+            opacity: 0.8;
+        }
+
+        /* Modal styles (Card View) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Overlay effect */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 400px;
+        }
+        .modal-content h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .modal-content p {
+            margin-bottom: 20px;
+            color: #555;
+        }
+        .modal-buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            color: white;
+        }
+        .modal-buttons .confirm-btn {
+            background-color: #dc3545;
+        }
+        .modal-buttons .cancel-btn {
+            background-color: #6c757d;
+        }
+        .modal-buttons button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>User List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Gender</th>
+                    <th>Age</th>
+                    <th>Qualifications</th>
+                    <th>Profile Picture</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                <!-- User rows will be populated here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal (Card View) -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirm Delete</h3>
+            <p id="deleteMessage"></p>
+            <div class="modal-buttons">
+                <button class="confirm-btn" onclick="confirmDelete()">Delete</button>
+                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = "http://localhost:5000/api/users"; // API endpoint for fetching users
+        let emailToDelete = null;
+
+        // Function to make API requests
+        async function apiRequest(endpoint, method = "GET", body = null, token = null) {
+            const options = {
+                method,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token ? `Bearer ${token}` : "",
+                },
+            };
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+            if (!response.ok) {
+                throw new Error((await response.json()).message || "API Error");
+            }
+            return response.json();
+        }
+
+        // Fetch and display users in the table
+        async function loadUsers() {
+            try {
+                const token = localStorage.getItem("authToken");
+                if (!token) throw new Error("Unauthorized. Please log in.");
+
+                const users = await apiRequest("/", "GET", null, token);
+
+                const tbody = document.getElementById("userTableBody");
+                tbody.innerHTML = ""; // Clear existing rows
+
+                users.forEach(user => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.phone}</td>
+                        <td>${user.gender}</td>
+                        <td>${user.age}</td>
+                        <td>${user.qualifications}</td>
+                        <td><img src="${user.profilePic}" alt="Profile Picture"></td>
+                        <td class="actions">
+                            <button class="edit-btn" onclick="editUser('${user.email}')">Edit</button>
+                            <button class="delete-btn" onclick="showDeleteModal('${user.email}')">Delete</button>
+                            <button class="details-btn" onclick="viewDetails('${user.email}')">Details</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                alert("Error loading users. Please try again.");
+                console.error(error);
+            }
+        }
+
+        // Show the delete modal with the user's email
+        function showDeleteModal(email) {
+            emailToDelete = email;
+            document.getElementById('deleteMessage').textContent = `Are you sure you want to delete the user with email: ${email}?`;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        // Confirm delete action
+        function confirmDelete() {
+            if (emailToDelete) {
+                deleteUser(emailToDelete);
+            }
+            closeModal(); // Close the modal
+        }
+
+        // Function to delete a user
+        async function deleteUser(email) {
+            try {
+                const token = localStorage.getItem("authToken");
+                if (!token) throw new Error("Unauthorized. Please log in.");
+
+                await apiRequest(`/delete/${email}`, "DELETE", null, token);
+                alert(`User with email ${email} deleted successfully.`);
+                loadUsers(); // Reload the user list
+            } catch (error) {
+                alert("Error deleting user. Please try again.");
+                console.error(error);
+            }
+        }
+
+        // Close the modal
+        function closeModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        // Navigate to details page
+        function viewDetails(email) {
+            window.location.href = `UserDetails.html?email=${encodeURIComponent(email)}`;
+        }
+
+        // Navigate to edit page
+        function editUser(email) {
+            window.location.href = `details.html?email=${encodeURIComponent(email)}`;
+        }
+
+        // Initialize the page by loading the user list
+        loadUsers();
+    </script>
+</body>
+</html>

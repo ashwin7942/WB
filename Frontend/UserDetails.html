@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile Page</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1d3557, #457b9d, #74ebd5);
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      display: flex;
+      gap: 20px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .profile-section {
+      width: 35%;
+      text-align: center;
+      border-right: 1px solid #ddd;
+      padding-right: 20px;
+      background: linear-gradient(to bottom, #ffffff, #e9f5ff);
+      border-radius: 10px 0 0 10px;
+    }
+
+    .profile-picture {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      margin-bottom: 10px;  
+      border: 5px solid #007bff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .profile-section h2 {
+      margin: 10px 0 5px;
+      font-size: 24px;
+      color: #1d3557;
+    }
+
+    .profile-section p {
+      margin: 5px 0;
+      font-size: 15px;
+      color: #495057;
+    }
+
+    .profile-section .social-icons {
+      margin-top: 15px;
+    }
+
+    .profile-section .social-icons a {
+      margin: 0 10px;
+      font-size: 20px;
+      color: #007bff;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .profile-section .social-icons a:hover {
+      color: #495057;
+    }
+
+    .details-section {
+      flex-grow: 1;
+      padding-left: 20px;
+      background: linear-gradient(to top, #ffffff, #e9f5ff);
+      border-radius: 0 10px 10px 0;
+      padding: 20px;
+    }
+
+    .details-section h3 {
+      margin-bottom: 15px;
+      font-size: 22px;
+      color: #1d3557;
+      border-bottom: 2px solid #74ebd5;
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+
+    .details-section form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #495057;
+      font-size: 14px;
+    }
+
+    .form-group input {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .form-group input:hover {
+      background-color: #f1f1f1;
+    }
+
+    .form-group input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .save-button {
+      background: linear-gradient(to right, #457b9d, #1d3557);
+      color: #fff;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: 0.3s ease;
+    }
+
+    .save-button:hover {
+      background: linear-gradient(to right, #1d3557, #457b9d);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Keyframe animation for fade-in effect */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <img src="profile.jpg" alt="" class="profile-picture">
+      <h2></h2>
+      <p></p>
+      <div class="social-icons">
+        <a href="#"><i class="fa fa-facebook"></i></a>
+        <a href="#"><i class="fa fa-twitter"></i></a>
+        <a href="#"><i class="fa fa-linkedin"></i></a>
+      </div>
+    </div>
+
+    <!-- Details Section -->
+    <div class="details-section">
+      <h3>User Details</h3>
+      <form>
+        <div class="form-group">
+          <label for="full-name">Name</label>
+          <br>
+          <!-- <input type="text" id="full-name" placeholder="Enter your name"> -->
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <br>
+          <!-- <input type="email" id="email" placeholder="Enter your email"> -->
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <br>
+          <!-- <input type="tel" id="phone" placeholder="Enter your phone number"> -->
+        </div>
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <br>
+          <!-- <input type="text" id="gender" placeholder="Enter your gender"> -->
+        </div>
+        <div class="form-group">
+          <label for="age">Age</label>
+          <br>
+          <!-- <input type="number" id="age" placeholder="Enter your age"> -->
+        </div>
+        <div class="form-group">
+          <label for="qualifications">Qualifications</label>
+          <br>
+          <!-- <input type="text" id="qualifications" placeholder="Enter your qualifications"> -->
+        </div>
+        <!-- <button type="submit" class="save-button">Save Changes</button> -->
+      </form>
+    </div>
+  </div>
+</body>
+</html>
